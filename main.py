@@ -19,6 +19,7 @@ def run_task(request: TaskRequest):
     user_msg = request.message.lower().strip()
 
     # --- MENTOR'S REQUIREMENT: GREETING LOGIC ---
+    # This catches "hi" before it goes to the AI
     greetings = ["hi", "hello", "hey", "hii", "hey there"]
     if user_msg in greetings:
         return {
@@ -37,6 +38,7 @@ def run_task(request: TaskRequest):
     except Exception:
         return {"reply": "I'm sorry, I couldn't process that. Can you please describe the task again?"}
 
+    # Log to Google Sheets
     log_success = log_task(parsed.get("task", "Unknown"), parsed.get("participants", []))
 
     return {
