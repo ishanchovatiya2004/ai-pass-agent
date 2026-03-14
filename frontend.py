@@ -7,7 +7,7 @@ st.title("🤖 AI-Pass Chat Agent")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display History
+# Display history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
@@ -21,14 +21,14 @@ if prompt := st.chat_input("How can I help you?"):
     with st.chat_message("assistant"):
         with st.spinner("Processing..."):
             try:
-                # IMPORTANT: Use your actual Backend Render URL here
+                # Use your Backend Render URL here
                 API_URL = "https://ai-pass-agent.onrender.com/task" 
                 
                 response = requests.post(API_URL, json={"message": prompt})
                 
                 if response.status_code == 200:
                     data = response.json()
-                    # Pull the 'reply' field we just created in the backend
+                    # Just show the simple reply string
                     answer = data.get("reply", "Task processed.")
                     st.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
