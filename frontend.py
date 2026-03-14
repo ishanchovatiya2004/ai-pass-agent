@@ -28,7 +28,7 @@ if prompt := st.chat_input("How can I help you?"):
                 
                 if response.status_code == 200:
                     data = response.json()
-                    # Display the 'reply' field from the backend
+                    # Pull the 'reply' field we just created in the backend
                     answer = data.get("reply", "Task processed.")
                     st.markdown(answer)
                     st.session_state.messages.append({"role": "assistant", "content": answer})
