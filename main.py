@@ -20,24 +20,31 @@ def run_task(request: TaskRequest):
     # 1. Handle Greetings
     greetings = ["hi", "hello", "hey", "hii", "hey there"]
     if user_msg in greetings:
+        return {"reply": "Hi! I am your AI-Pass Assistant. How can I help you today?"}
+
+    # 2. VALIDATION: Check for nonsense or very short input
+    # If input is less than 5 characters or just random letters
+    if len(user_msg) < 5 or user_msg.isalpha() == False and " " not in user_msg:
         return {
-            "reply": "Hi! I am your AI-Pass Assistant. How can I help you today?"
+            "reply": "⚠️ **Invalid Input**\n\n**Guide:** I didn't recognize that as a task. Please try something like: *'Book a meeting with Ishan'* or *'Check status with Sarah'*."
         }
 
-    # 2. Handle Tasks with Error Handling
+    # 3. Handle Real Tasks
     try:
         ai_result_string = analyze_task(request.message)
         parsed = json.loads(ai_result_string)
         
-        # Log to Google Sheets
+        # If AI fails to find a real task name, use the guide
+        if parsed.get("task") == "None" or not parsed.get("task"):
+             raise ValueError("No task found")
+
         log_success = log_task(parsed.get("task", "Unknown"), parsed.get("participants", []))
         
         return {
             "reply": f"Understood! I've logged the task: '{parsed.get('task')}' to your Google Sheet."
         }
 
-    except Exception as e:
-        # Error Guidance Scenario
+    except Exception:
         return {
-            "reply": "⚠️ I encountered an issue processing that. \n\n**Guide:** Please try typing a specific instruction like: *'Schedule a sync with Sarah'* or *'Follow up on the project with John'*. Make sure to include a task and a person's name."
+            "reply": "⚠️ **I need more details.**\n\n**Guide:** Please type a full instruction. Example: *'Schedule sync with Mark'*."
         }
