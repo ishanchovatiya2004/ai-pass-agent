@@ -18,7 +18,7 @@ if prompt := st.chat_input("How can I help you?"):
 
     with st.chat_message("assistant"):
         try:
-            # Change to your actual backend URL
+            # Change this to your actual BACKEND URL
             API_URL = "https://ai-pass-agent.onrender.com/task" 
             response = requests.post(API_URL, json={"message": prompt})
             
@@ -28,6 +28,6 @@ if prompt := st.chat_input("How can I help you?"):
                 st.markdown(answer)
                 st.session_state.messages.append({"role": "assistant", "content": answer})
             else:
-                st.error("Backend Error. Please try again.")
+                st.error("Error connecting to agent.")
         except Exception:
-            st.error("Connection failed.")
+            st.error("Backend unreachable.")
